@@ -29,6 +29,8 @@
             </select>
         </div>
         <img id="sourceImage" style="display:none;" alt="Image à convertir">
+        <br />
+        <input type="text" id="imageName" placeholder="Nom de l'image">
         <div class="download-container">
             <button id="convertButton">Convertir et télécharger</button>
         </div>
@@ -55,18 +57,20 @@
             const ctx = canvas.getContext('2d');
             const outputFormat = document.getElementById('outputFormat').value;
             const extension = outputFormat.split('/')[1];
-
+            const imageName = document.getElementById('imageName').value; // Récupérer le nom de l'image saisi par l'utilisateur
+        
             canvas.width = img.width;
             canvas.height = img.height;
             ctx.drawImage(img, 0, 0, img.width, img.height);
-
+        
             canvas.toBlob(function (blob) {
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
-                link.download = 'converted_image.' + extension;
+                link.download = imageName + '.' + extension; // Utiliser le nom de l'image saisi par l'utilisateur
                 link.click();
-            }, outputFormat, 1); // Modifiez la valeur de 1 pour ajuster la qualité de l'image (0 à 1)
+            }, outputFormat, 1);
         });
+        
     </script>
 </body>
 
