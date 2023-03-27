@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Conversion d'image</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Convertisseur d'images en ligne</h1>
+        <p>Convertir des fichiers image de tous les formats en ligne</p>
+        <br />
+        <input type="file" id="uploadImage" accept="image/*">
+        <label for="uploadImage">Choisir une image</label>
+        <div class="select-container">
+            <label for="outputFormat">Format de sortie :</label>
+            <select id="outputFormat">
+                <option value="image/jpg">JPG</option>
+                <option value="image/jpeg">JPEG</option>
+                <option value="image/png">PNG</option>
+                <option value="image/webp">WebP</option>
+                <option value="image/gif">GIF</option>
+                <option value="image/bmp">BMP</option>
+                <option value="image/tiff">TIFF</option>
+                <option value="image/svg+xml">SVG</option>
+                <option value="image/ico">ICO</option>
+                <option value="image/x-icon">X-Icon</option>
+                <option value="image/vnd.microsoft.icon">Microsoft Icon</option>
+            </select>
+        </div>
+        <img id="sourceImage" style="display:none;" alt="Image à convertir">
+        <div class="download-container">
+            <button id="convertButton">Convertir et télécharger</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-toBlob/1.0.0/canvas-toBlob.min.js"></script>
+    <script>
+        document.getElementById('uploadImage').addEventListener('change', function (event) {
+            const img = document.getElementById('sourceImage');
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                img.src = e.target.result;
+                img.onload = function () {
+                    document.getElementById('convertButton').style.display = 'block';
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+        document.getElementById('convertButton').addEventListener('click', function () {
+            const img = document.getElementById('sourceImage');
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const outputFormat = document.getElementById('outputFormat').value;
+            const extension = outputFormat.split('/')[1];
+
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0, img.width, img.height);
+
+            canvas.toBlob(function (blob) {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'converted_image.' + extension;
+                link.click();
+            }, outputFormat, 1); // Modifiez la valeur de 1 pour ajuster la qualité de l'image (0 à 1)
+        });
+    </script>
+</body>
+
+</html>
